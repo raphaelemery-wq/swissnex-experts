@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swissnex Expert Network — Boston & New York</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: #f7f7f5; color: #1a1a1a; }
+.hero { background: #E30613; padding: 48px 40px 40px; }
+.hero h1 { color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.hero p { color: rgba(255,255,255,0.88); font-size: 15px; line-height: 1.6; max-width: 680px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+.search-wrap { position: relative; margin-bottom: 20px; }
+.search-wrap svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #999; }
+.search { width: 100%; padding: 14px 16px 14px 44px; border-radius: 12px; border: 1.5px solid #e0e0e0; font-size: 15px; font-family: inherit; background: #fff; transition: border-color 0.2s; outline: none; }
+.search:focus { border-color: #E30613; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.pill { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; border: 1.5px solid #ddd; background: #fff; color: #555; cursor: pointer; transition: all 0.15s; user-select: none; }
+.pill:hover { background: #f0f0f0; }
+.pill.active { background: #E30613; color: #fff; border-color: #E30613; }
+.count { font-size: 13px; color: #999; margin-bottom: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.card { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 22px 24px; transition: box-shadow 0.2s, transform 0.15s; }
+.card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
+.card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; letter-spacing: 0.5px; }
+.card-name { font-weight: 600; font-size: 16px; line-height: 1.2; }
+.card-role { font-size: 13px; color: #666; margin-top: 2px; }
+.card-company { font-size: 12px; color: #999; margin-top: 1px; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; }
+.tag.ind { background: #E6F1FB; color: #0C447C; }
+.tag.biz { background: #EEEDFE; color: #3C3489; }
+.loc { font-size: 12px; color: #777; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+.bio { font-size: 13px; color: #555; line-height: 1.55; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.linkedin { font-size: 13px; color: #E30613; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 5px; }
+.linkedin:hover { text-decoration: underline; }
+.linkedin svg { width: 16px; height: 16px; }
+.cta { background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 32px; text-align: center; margin-top: 32px; }
+.cta p { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.cta small { font-size: 13px; color: #777; }
+.cta-btn { display: inline-block; margin-top: 14px; padding: 10px 28px; background: #E30613; color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; transition: background 0.15s; }
+.cta-btn:hover { background: #c50510; }
+.no-results { text-align: center; padding: 48px 20px; color: #999; font-size: 15px; }
+@media (max-width: 700px) {
+  .hero { padding: 32px 20px; }
+  .hero h1 { font-size: 22px; }
+  .container { padding: 20px 16px 40px; }
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* Google Sheets connection banner */
+.gs-banner { background: #FFF9E6; border: 1px solid #F0E0A0; border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; font-size: 13px; color: #806A20; display: none; }
+.gs-banner a { color: #E30613; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Expert network</h1>
+  <p>Browse our network of 50+ industry experts across Boston and New York. All experts volunteer their time — the initial meeting is always free. Come prepared and be mindful of their availability.</p>
+</div>
+
+<div class="container">
+  <div id="gs-banner" class="gs-banner"></div>
+
+  <div class="search-wrap">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input class="search" type="text" placeholder="Search by name, expertise, or keyword..." id="search">
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="cta">
+    <p>Want to meet one of our experts?</p>
+    <small>Email Ahmet &amp; Oriane (Boston) or Joséphine (NYC) and we'll facilitate an introduction.</small><br>
+    <a class="cta-btn" href="mailto:oriane.rutsche@swissnex.org">Request a meeting</a>
+  </div>
+</div>
+
+<script>
+// ============ DATA ============
+// Default embedded data (fallback)
+let EXPERTS = [{"name": "Alex Cadotte", "initials": "AC", "company": "MCRA", "position": "Vice President, Digital Healt, AI, and Radiology Regulatory Affairs", "location": "Washington/ hybrid", "industry": ["AI / Robotics", "Engineering", "MedTech"], "business": ["Design", "Entrepreneurship (general)", "FDA"], "bio": "I am ex FDA so the time with me would be generally spent on getting a high level understanding of what FDA would expect for validation testing of a medical device that includes a AI/ML algorithm.  We ...", "linkedin": "https://www.linkedin.com/in/alex-cadotte-439bb0171/"}, {"name": "Alexandra Alvarez", "initials": "AA", "company": "Schumann Burghart LLP", "position": "Attorney at Law", "location": "New York", "industry": ["Legal"], "business": ["Immigration", "Incorporation", "Legal (general)"], "bio": "Schumann Burghart LLP advises in all areas of law, from the formation of a company, corporate governance through contract drafting, M&A, immigration, employment matters to litigation, in the German or...", "linkedin": "https://www.linkedin.com/in/alexandra-j-alvarez-nee-beierlein-7b7a8296/"}, {"name": "Allison Byers", "initials": "AB", "company": "Scroobious", "position": "Founder and CEO ", "location": "Boston", "industry": ["Pitching"], "business": ["Entrepreneurship (general)", "Fundraising", "Pitching / Storytelling"], "bio": "At Scroobious, Lily works directly with early-stage startup founders, particularly those who are underrepresented in the venture space. As the Community Lead, Lily is responsible for accelerator partn...", "linkedin": "https://abyers@scroobious.com\nhttps://www.linkedin.com/in/allison-byers/\n"}, {"name": "Allison Kranz", "initials": "AK", "company": "Lodestone Legal, LLC", "position": "Principal, Immigration Law Practice & Advising", "location": "Cambridge", "industry": ["Biotech", "MedTech"], "business": ["Immigration"], "bio": "U.S. immigration law firm Lodestone Legal, LLC offers 30-minute introductory consultations to the Swissnex community at no charge. To schedule a free complimentary consultation, email Info@LodestoneLe...", "linkedin": "https://www.linkedin.com/in/allisonkranz"}, {"name": "Andrea Jeglum", "initials": "AJ", "company": "Sandler, Travis & Rosenberg, P.A.", "position": "Associate", "location": "Boston", "industry": ["Biotech", "MedTech", "Pharma"], "business": ["FDA", "Legal (general)"], "bio": "\"Andrea Jeglum, an Associate at Sandler, Travis & Rosenberg P.A., is a trade attorney assisting clients with importing into the United States, working with government agencies that oversee imports int...", "linkedin": "https://www.linkedin.com/in/andrea-jeglum-00833a5/"}, {"name": "Anya Boguslavsky", "initials": "AB", "company": "Skrillo", "position": "Co-Founder and Consultant", "location": "New York", "industry": ["AI / Robotics", "FinTech", "Pharma"], "business": ["Entrepreneurship (general)", "Marketing / Sales", "Go to market"], "bio": "Skrillo partners with international companies to drive market expansion, operational clarity, and revenue growth. Our work spans three core areas: first, we offer tailored translation and localization...", "linkedin": "https://linkedin.com/in/annaboguslavsky"}, {"name": "Audrey Guazzone", "initials": "AG", "company": "LeanLia", "position": "CEO & Founder ", "location": "New York", "industry": ["AI / Robotics", "ICT", "MedTech"], "business": ["Business Development", "Entrepreneurship (general)", "Marketing / Sales"], "bio": "If you're looking for expert guidance on entering the U.S. market but don’t need a full strategy package, this session provides high-level insights and actionable advice tailored to your company’s nee...", "linkedin": "https://www.linkedin.com/in/audreyguazzone/"}, {"name": "Ayse Eren Sengueler", "initials": "AE", "company": "OPENCatman", "position": "U.S. Sales Lead ", "location": "Miami", "industry": ["SaaS", "B2B Technology"], "business": ["Business Development", "Entrepreneurship (general)", "Marketing / Sales"], "bio": "We provide startups with the soft landing assistance they need to find their footing in the U.S. market. Startups can expect to reach their first milestones of their market entry within the first six ...", "linkedin": "https://www.linkedin.com/in/ayse-eren-senguler/"}, {"name": "Benjamin Debonneville", "initials": "BD", "company": "Pitch Deck Creators", "position": "Co-Founder", "location": "Lausanne", "industry": ["Biotech", "CleanTech", "MedTech"], "business": ["Design", "Fundraising", "Pitching / Storytelling"], "bio": "As the founder of a B2B branding agency, I specialize in simplifying complex products with compelling stories. I help startups showcase their value to investors and create brands that stand out in the...", "linkedin": "https://www.linkedin.com/in/benjamindebonneville/"}, {"name": "Camillus Fitzpatrick", "initials": "CF", "company": "Earth Fice", "position": "Climate & Nature", "location": "New York", "industry": ["CleanTech"], "business": ["Business Development", "Marketing / Sales", "Pricing"], "bio": "I am a sustainability, strategy and sales professional with deep expertise in helping climate tech startups scale, commercialize their solutions, and gain access to strategic customers and markets.\n\nI...", "linkedin": "https://www.linkedin.com/in/camillus-fitzpatrick-12919a3b/"}, {"name": "Charles Lorum", "initials": "CL", "company": "Hong Kong Economic and Trade Office ", "position": "Deputy Head of Business and Talent Promotion ", "location": "New York", "industry": ["AI / Robotics", "Tech", "CPG", "Media", "ICT"], "business": ["Business Development", "Entrepreneurship (general)", "Leadership"], "bio": "In our initial consultation, I’ll take the time to understand your startup’s goals, challenges, and unique value proposition. We’ll discuss your target market, growth objectives, and any immediate pai...", "linkedin": "https://www.linkedin.com/in/charleslorum/"}, {"name": "Chris Steele", "initials": "CS", "company": "EBP", "position": "CEO and President", "location": "Boston", "industry": ["CleanTech", "Pharma", "Economic development / Site selection consulting"], "business": ["Corporate site selection and economic development"], "bio": "I work with companies as they look to determine where to set up their next office, manufacturing, research, or logistics location. I am happy to share my experience on helping companies enter new mark...", "linkedin": "https://www.linkedin.com/in/christopher-steele-24b5595/"}, {"name": "Christian, Zeiler-Muniz", "initials": "CZ", "company": "Independent", "position": "General Manager / COO", "location": "New York", "industry": ["FinTech", "Information and Communications Technology"], "business": ["Entrepreneurship (general)", "Leadership", "Pitching / Storytelling"], "bio": "Founded a hardware tech startup in the US over 10y ago with minimal resources and expanded a global Fintech business into the US with unlimited resources. \n\nExperienced in building high performing tea...", "linkedin": "https://www.linkedin.com/in/zeiler-muniz/"}, {"name": "Clarisse Comte", "initials": "CC", "company": "Massat Consulting Goup", "position": "Partner", "location": "New York", "industry": ["Accounting & Tax"], "business": ["Incorporation", "Taxation"], "bio": "Massat Consulting Group has been providing full-service accounting, tax, and consulting services to international clients throughout the USA, Mexico, and Canada. I can give a quick overview of the tax...", "linkedin": "https://www.linkedin.com/in/clarissecomte"}, {"name": "Craig Kenesky", "initials": "CK", "company": "Wilson Sonsini", "position": "Patent Atotrney", "location": "New York", "industry": ["Biotech", "MedTech", "Pharma"], "business": ["IP", "Legal (general)"], "bio": "I advise growth-stage life science companies on building value through IP strategy. I prepare, prosecute, and license patents in all areas of life science.", "linkedin": "https://www.linkedin.com/in/craig-kenesky-ph-d-1ab03a6/"}, {"name": "Cvic Innocent", "initials": "CI", "company": "Frankenbuild Ventures", "position": "Founder & GeneralPartner", "location": "Boston", "industry": ["AI / Robotics", "CleanTech", "FinTech"], "business": ["Entrepreneurship (general)", "IP", "Pitching / Storytelling"], "bio": "In both my everyday life and in my work life I support startups. Venture capital is but one avenue of support, and consulting on niche topics important to your small- or medium-sized enterprise is ano...", "linkedin": "https://www.linkedin.com/in/cvic-innocent/"}, {"name": "Dan Griffith", "initials": "DG", "company": "Greater Gain Group", "position": "Founder/CEO", "location": "Greenville, SC", "industry": ["AI / Robotics", "FinTech", "MedTech"], "business": ["Entrepreneurship (general)", "Leadership", "Marketing / Sales"], "bio": "We help European B2B software and tech-enabled service companies—especially those in regulated markets like healthcare, financial services, and insurance—enter and grow in the U.S. market with a clear...", "linkedin": "https://www.linkedin.com/in/dangriffithsr"}, {"name": "Dan Lackner", "initials": "DL", "company": "Folkdot", "position": "US Sales", "location": "Newport, RI", "industry": ["FinTech", "ICT", "Social Sciences and Business Management"], "business": ["Business Development", "Leadership", "Marketing / Sales"], "bio": "We developed a program for companies preparing to enter the US Market.  The program was piloted with Business France and very well received.  We provided an initial one hour review of each company's p...", "linkedin": "https://www.linkedin.com/in/dhlackner/"}, {"name": "Daniel Schauferberger", "initials": "DS", "company": "Schaufelberger Consulting LLC; NGT BioPharmaconsultants LLC, Johns Hopkins University, School of Medicine", "position": "President; VP CMC; Adjunct Assistant Professor", "location": "Longboat Key", "industry": ["Biotech", "Pharma"], "business": ["Business Development", "FDA", "Hiring", "IP", "Leadership"], "bio": "Pharmaceutical executive with 30+ years of experience in big pharma; pharmaceutical product development", "linkedin": "https://www.linkedin.com/in/daniel-schaufelberger-phd-5aa10117/"}, {"name": "David Barone", "initials": "DB", "company": "Boston MedTech Advisors", "position": "Principal", "location": "Boston", "industry": ["MedTech"], "business": ["Business Development", "FDA", "Marketing / Sales", "Pitching / Storytelling", "Reimbursement"], "bio": "Extensive experience working with European medtech companies seeking to enter and expand in the US market.", "linkedin": "https://www.linkedin.com/in/david-barone-5a3a823/"}, {"name": "Eliad Josephson", "initials": "EJ", "company": "Natel", "position": "Principal", "location": "Los Angeles", "industry": ["Biotech", "Genetics", "Laboratories", "Precision Health"], "business": ["Business Development", "Entrepreneurship (general)", "Leadership"], "bio": "Digital Health Executive - Pioneering Precision Health, Lab Data & Home Testing Innovation | Expert and Consultant in Strategic Partnerships & Business Development", "linkedin": "https://www.linkedin.com/in/eliadjosephson/"}, {"name": "Nikolay Gresko", "initials": "NG", "company": "Yale", "position": "Scientist", "location": "New Haven", "industry": [], "business": ["Biomedical research", "physiology", "renal and cell biology"], "bio": "Full spectrum of biomedical science including but not limited to data mining, experimental design, research project management etc.", "linkedin": "https://www.linkedin.com/in/nikolay-gresko-scientist-biomedical-discovery-md-phd"}, {"name": "Emilie Pralong", "initials": "EP", "company": "Radar RP Sàrl", "position": "Director", "location": "Lausanne", "industry": ["Arts", "Biotech", "CleanTech"], "business": ["Entrepreneurship (general)", "Leadership", "PR"], "bio": "At RADAR PR, we fervently promote the voices of diversity, those of women, scientists of all ages, and members of the LGBT+ community. Does it matter to you as well? We are committed to making researc...", "linkedin": "https://www.linkedin.com/in/prpassionnateaboutscience/"}, {"name": "Emma Ukleja", "initials": "EU", "company": "MCRA", "position": "Director, Business Development", "location": "Washington", "industry": ["AI / Robotics", "MedTech"], "business": ["FDA", "Reimbursement", "Regulatory", "Clinical", "Compliance", "Cybersecurity"], "bio": "I specialize in offering comprehensive insights into MCRA and its extensive array of services. My role involves providing valuable information about our organization, addressing general inquiries, and...", "linkedin": "https://www.linkedin.com/in/emma-ukleja"}, {"name": "Erich Nussbaumer", "initials": "EN", "company": "Ayni Leadership", "position": "Leadership Coach", "location": "New York", "industry": ["CleanTech", "FinTech", "Social Sciences and Business Management"], "business": ["Entrepreneurship (general)", "Leadership"], "bio": "As a Leadership Coach, I believe that with a curious approach, every person can discover a path to fulfillment, even in the midst of difficult challenges. I focus on supporting entrepreneurs and their...", "linkedin": "https://www.linkedin.com/in/erich-nussbaumer-976b0b84/"}, {"name": "Erlinda Arriola", "initials": "EA", "company": "JLL Spark", "position": "Investor", "location": "New York", "industry": ["FinTech", "Social Sciences and Business Management"], "business": ["Business Development", "Leadership", "Pitching / Storytelling"], "bio": "I’m an investor at a CVC and can help bridging gaps in fundraising bet CH and US", "linkedin": "https://www.linkedin.com/in/earriola1/"}, {"name": "Fabienne Hubschmid", "initials": "FH", "company": "Petee Ventures", "position": "Co-Founder & COO", "location": "New York", "industry": ["FinTech", "Food"], "business": ["Business Development", "Entrepreneurship (general)", "Fundraising"], "bio": "Working with founders / C-level executives on growth strategy and fundraising. Startups can expect hands on advice and access to connections on the ground.", "linkedin": "https://www.linkedin.com/in/fabihubschmid"}, {"name": "Genevieve Bartuski", "initials": "GB", "company": "Unicorn Intelligence Tech Partners", "position": "Founder/ Privacy and AI Goverce Consultant", "location": "Abingdon", "industry": ["AI / Robotics", "HealthTech"], "business": ["Compliance", "Regulatory"], "bio": "I am a psychologist and co-founder of Unicorn Intelligence Tech Partners. We partner with Swiss health tech and mental health tech founders, executives, and product teams entering the U.S. market. We ...", "linkedin": "https://www.linkedin.com/in/genevievebartuski/"}, {"name": "Gert Christen", "initials": "GC", "company": "USA Launching Pad", "position": "Founder", "location": "San Francisco", "industry": ["AI / Robotics", "Engineering", "ICT"], "business": ["Business Development", "Entrepreneurship (general)", "Marketing / Sales"], "bio": "We help foreign companies create leads and build sales in the USA. Our program replaces trial-and-error selling with a method to accelerate time to revenue. And our team of experienced US business fou...", "linkedin": "https://www.linkedin.com/in/gertchristen/"}, {"name": "Guillaume Poirier", "initials": "GP", "company": "Accuracy", "position": "Director", "location": "Boston", "industry": ["Gaming", "MedTech", "Digital Health"], "business": ["Business Development", "FDA", "Market Research", "Go to market"], "bio": "A global consulting and advisory firm is active in many industries, we offer a tailored approach supported by our unique combination of industry expertise and knowledge integrating Strategy, Technical...", "linkedin": "https://www.linkedin.com/in/guillaumepoirier/"}, {"name": "Guillermo Elias", "initials": "GE", "company": "Proximity Therapeutics", "position": "President and CEO", "location": "Boston & San Francisco", "industry": ["Biotech", "Pharma"], "business": ["Fundraising", "Leadership", "Pitching / Storytelling"], "bio": "I am President and CEO of Proximity Therapeutics, a Mass General Brigham Ventures, Arclight (Mission Bio Capital), Pillar VC and Moore Capital Management portfolio company leading the discovery and de...", "linkedin": "https://linkedin.com/in/guillermoelias"}, {"name": "Hannah Jurist-Schoen", "initials": "HJ", "company": "Hannah JS Design", "position": "Creative and Communications Strategist", "location": "New York", "industry": ["Arts", "Biotech", "CleanTech"], "business": ["Design", "Marketing / Sales", "Pitching / Storytelling"], "bio": "Support companies in their goals to bring their products to the mainstream by providing on brand and on message visual , written, and communications support across platforms.", "linkedin": "https://www.linkedin.com/in/hannahjuristschoen"}, {"name": "Jacqui Barrett", "initials": "JB", "company": "The Bright Arc", "position": "Economist and Growth Strategist", "location": "New York", "industry": ["CleanTech", "FinTech", "EdTech"], "business": ["Marketing / Sales", "PR", "Pitching / Storytelling"], "bio": "Jacqui Barrett is an economist, data scientist and growth strategist focused on turning data into revenue generating assets and data products. As the Founder of The Bright Arc, a data strategy agency,...", "linkedin": "https://linkedin.com/in/jacquibarrett"}, {"name": "Jade Ruscev", "initials": "JR", "company": "Stamina Law", "position": "Partner", "location": "New York", "industry": ["Biotech", "CleanTech", "MedTech"], "business": ["Fundraising", "Incorporation", "Legal (general)"], "bio": "I'm an attorney licensed at the New York and Paris bar. We help tech startups with their incorporations, fundraisings, stock option plans...\n- incorporation DE C-corp \n- fundraisings (convertible note...", "linkedin": "https://www.linkedin.com/in/jade-ruscev-staminalaw/"}, {"name": "Jae Zhou", "initials": "JZ", "company": "Morrison Foerster LLP", "position": "Partner", "location": "New York", "industry": ["AI / Robotics", "FinTech"], "business": ["Fundraising", "Incorporation", "Legal (general)"], "bio": "I represent startups, entrepreneurs, venture capital funds, and private equity firms that launch and finance new products and technologies across a broad range of sectors. I advise emerging technology...", "linkedin": "https://www.linkedin.com/in/jae-zhou-56017322/"}, {"name": "James De Vellis", "initials": "JD", "company": "Foley & Lardner LLP", "position": "U.S. Patent Lawyer/IP mentor", "location": "Boston", "industry": ["AI / Robotics", "CleanTech", "MedTech"], "business": ["IP", "Incorporation", "Legal (general)"], "bio": "I prepare international patent and IP strategies for early stage tech companies that are built to accomplish identified business objectives.  (I'm a mentor at a number of accelerators where I do this ...", "linkedin": "https://www.linkedin.com/in/jamesdevellis/"}, {"name": "JC Muyl", "initials": "JM", "company": "Brightstride Health Strategies", "position": "Founder & CEO", "location": "San Francisco", "industry": ["Biotech", "MedTech", "Pharma"], "business": ["Business Development", "Fundraising", "Marketing / Sales"], "bio": "US go-to market services\n-Market sizing (TAM/SAM/SOM)\n-Product-market fit\n-Define US Ideal Customer Profile (ICP)\n-Competitive analysis\n-Pitch deck optimization\n-Market Exploration w/ intros into pote...", "linkedin": "http://linkedin.com/in/jcmuyl"}, {"name": "Jean Ge", "initials": "JG", "company": "Wolf Greenfield", "position": "Patent Attorney", "location": "Boston / Washington DC", "industry": ["Biotech", "Food", "Pharma"], "business": ["IP"], "bio": "\"As a patent attorney in Wolf Greenfield’s Biotechnology Practice, I counsel clients in the life sciences industry (particularly in the areas of antibodies, antibody-drug conjugates, RNA-based therape...", "linkedin": "https://www.linkedin.com/in/jean-ge-phd-84522932/"}, {"name": "Jens Jochems", "initials": "JJ", "company": "JJ Business Consultancy", "position": "Founder", "location": "New York", "industry": ["Engineering", "Food", "Interior Design"], "business": ["Entrepreneurship (general)", "Hiring"], "bio": "At JJBC, we are dedicated to help companies not only attract top talent but also build workplaces where people thrive. From Recruitment- and HR support to growth strategies, our goal is to help busine...", "linkedin": "https://www.linkedin.com/in/jensjochems/"}, {"name": "Jonas Duss", "initials": "JD", "company": "1sourcehealth.com / Formerly US CEO Kaia Health", "position": "Principal", "location": "New York", "industry": ["ICT", "MedTech", "Pharma"], "business": ["Business Development", "Entrepreneurship (general)", "FDA", "Hiring", "Reimbursement"], "bio": "I have been advising startups for a few years now, independently and for German Accelerator New York.\nUsually the focus lies on US Go-to-Market in the Life Sciences space, often with a focus on digita...", "linkedin": "https://www.linkedin.com/in/jduss"}, {"name": "Joseph Lehar", "initials": "JL", "company": "Lehar Advising LLC", "position": "Advisor to biotechs, incubators, and venture capital", "location": "Cambridge, MA", "industry": ["AI / Robotics", "Biotech", "Pharma"], "business": ["Entrepreneurship (general)", "Pitching / Storytelling", "Business Development"], "bio": "I advise many biotechs, incubators, and venture funds on using AI for life sciences. I have built data sci/AI capabilities at major pharma companies, Google/Verily, and multiple biotechs, and got to k...", "linkedin": "https://www.linkedin.com/in/josephlehar"}, {"name": "Joshua Rodman", "initials": "JR", "company": "Schulz Trade Law PLLC", "position": "Senior Attorney", "location": "Dallas, TX ", "industry": ["Export controls", "Sanctions", "Government contracting", "CFIUS"], "business": ["Legal (general)"], "bio": "Mr. Rodman’s legal practice focuses on helping corporate clients located around the world comply with (1) U.S. export controls and sanctions laws and rules; (2) U.S., state and local government contra...", "linkedin": "https://www.linkedin.com/in/jrodman1/"}, {"name": "Kimberly Hathaway", "initials": "KH", "company": "Hathaway PR", "position": "Managing Partner", "location": "San Francisco", "industry": ["AI / Robotics", "CleanTech", "Social Sciences and Business Management"], "business": ["Business Development", "Entrepreneurship (general)", "Leadership", "PR", "Pitching / Storytelling"], "bio": "I help startups and scale-ups secure Earned Media through C-Suite positioning via a robust content development program and securing digital, print, and broadcast interviews. The content programs inclu...", "linkedin": "https://www.linkedin.com/in/kimberly-hathaway-7689a85/"}, {"name": "Laura Stoffel", "initials": "LS", "company": "Cooley", "position": "Partner", "location": "Boston", "industry": ["CleanTech", "FinTech", "MedTech"], "business": ["Fundraising", "Incorporation", "Legal (general)"], "bio": "Practical, strategic advice for high-growth technology companies and leading venture capital funds.", "linkedin": "https://www.linkedin.com/in/lsstoffel/"}, {"name": "Leentje  De Leeuw", "initials": "LD", "company": "International Management Solutions", "position": "Business Development Manager", "location": "Chicago", "industry": ["AI / Robotics", "MedTech", "Engineering"], "business": ["Taxation"], "bio": "International Management Solutions (IMS) is an accounting and consulting firm dedicated to assisting European companies in establishing and growing their businesses in the United States. Since 1998, I...", "linkedin": "https://www.linkedin.com/in/leentjedeleeuw/"}, {"name": "Lena Baudo", "initials": "LB", "company": "Starts Consulting", "position": "Founder and Marketing Mentor", "location": "New York", "industry": ["AI / Robotics", "Food", "ICT"], "business": ["Entrepreneurship (general)", "Marketing / Sales", "Market Research"], "bio": "Results-driven marketing strategist with 15 years of experience at industry leaders like Google and Microsoft, specializing in market research, data analysis, and marketing strategy. After witnessing ...", "linkedin": "https://www.linkedin.com/in/lenabaudo/"}, {"name": "Leoni Runge", "initials": "LR", "company": "Zaya Care", "position": "Founder & CEO", "location": "New York City", "industry": ["HealthTech"], "business": ["Business Development", "Entrepreneurship (general)", "Fundraising"], "bio": "Hi, I'm Leoni, Founder of the HealthTech startup Zaya Care. We empower private care practices to accept insurance at rewarding terms and thereby help patients get access to affordable care. I'm a form...", "linkedin": "https://www.linkedin.com/in/leonirunge/"}, {"name": "Lorenz Wollfers", "initials": "LW", "company": "Wolffers Cohen & Edderai LLP", "position": "Partner", "location": "New York", "industry": ["FinTech", "ICT", "MedTech"], "business": ["Immigration", "Incorporation", "Legal (general)", "Taxation"], "bio": "I am an experienced business immigration lawyer who advises foreign professionals on strategies to secure employment or investor visas for the United States. Trained both in Switzerland and in the Uni...", "linkedin": "https://www.linkedin.com/in/lorenz-wolffers-05a60a/"}, {"name": "Lütfü Erdinc", "initials": "LE", "company": "Procter & Gamble", "position": "Sales Director Gillette", "location": "Boston", "industry": ["Fast-moving Consumer Goods"], "business": ["Pitching / Storytelling", "Marketing / Sales", "Pricing"], "bio": "I have 20 years experience in the consumer goods industry working with Procter & Gamble as Sales Leader across various categories and markets. I am currently based in Boston and working as Sales Direc...", "linkedin": "https://linkedin.com/in/lutfuerdinc"}, {"name": "Marina Herias Saenz", "initials": "MH", "company": "Innovate 4 Nature", "position": "Programme Manager", "location": "Zurich, Switzerland", "industry": ["CleanTech", "Social Sciences and Business Management", "Circular Economy", "Sustainability"], "business": ["Business Development", "Entrepreneurship (general)"], "bio": "I work as a business strategist and programme manager at the intersection of nature, innovation and finance. After some experience in strategy consulting in banking and finance, I moved into the start...", "linkedin": "https://linkedin.com/in/marinaherias"}, {"name": "Mark Lesselroth", "initials": "ML", "company": "BioPortUSA", "position": "President and CEO", "location": "Syracuse", "industry": ["Biotech", "MedTech", "Pharma"], "business": ["Business Development", "FDA", "Legal (general)", "Marketing / Sales", "Reimbursement"], "bio": "I think the greatest contribution I can bring to the network is helping companies understand how to navigate the challenges associated with trying to commercialize their technology in the United State...", "linkedin": "https://www.linkedin.com/in/marklesselroth/"}, {"name": "Michael Hanson", "initials": "MH", "company": "Optimum Dynamics LLC", "position": "Startup Advisor and Business Growth Strategy Consultant", "location": "Boston", "industry": ["Biotech", "MedTech", "CleanTech"], "business": ["Business Development", "Fundraising", "Pitching / Storytelling"], "bio": "Optimum Dynamics LLC is a management consultancy that advises leaders of startup and established businesses, how to scale-up effectively, evolve their business growth strategy, solve growth challenges...", "linkedin": "https://www.linkedin.com/in/michaelhanson1"}, {"name": "Mirko Kerschbaum", "initials": "MK", "company": "PEGAZA LLC", "position": "CEO and Founder", "location": "New York City/ Berne", "industry": ["AI / Robotics", "Engineering", "Social Sciences and Business Management"], "business": ["Business Development", "Fundraising", "Leadership"], "bio": "I have spent my career working in almost every functional area of large companies. I worked in 2 startups. I started my own business. I lived in the US, Germany, Switzerland, Sweden and spent a lot of...", "linkedin": "https://www.linkedin.com/in/michaelhanson1"}, {"name": "Nicolas Abele", "initials": "NA", "company": "SONIX", "position": "CEO", "location": "Boston/ Vaud", "industry": ["Engineering", "ICT", "Quantum Computing"], "business": ["Business Development", "Entrepreneurship (general)", "Fundraising", "IP"], "bio": "I have co-founded 4 startups in various fields:\n- AR/VR (Lemoptix), , part of the TOP100, sold to Intel\n- Greentech (Osmoblue), closed\n- Quantum company (Miraex), part of the TOP100. Growing mode\n- IC...", "linkedin": "https://www.linkedin.com/in/nicolasabele/"}, {"name": "Oliver Coste", "initials": "OC", "company": "Coste and Partners LLC", "position": "CEO & Consultant", "location": "New York", "industry": ["AI / Robotics", "ICT"], "business": ["Business Development", "Entrepreneurship (general)", "Fundraising"], "bio": "I founded and managed 3 tech startups from Paris and acquired US customers like Microsoft, IBM, Arrow Electronics, Dish Network", "linkedin": "https://www.linkedin.com/in/olivercoste/"}, {"name": "Paul Cosmovici", "initials": "PC", "company": "Cosmovici Intellectual Property", "position": "Managing Partner", "location": "Washington/ Geneva", "industry": ["Biotech", "ICT", "MedTech"], "business": ["IP", "Legal (general)"], "bio": "I am open to advise start-ups in the IP field, in territories including the US, EU, UK and Switzerland. I am able to assist in patents, trademarks, software and domain names fields.", "linkedin": "https://www.linkedin.com/in/paul-cosmovici-3012322/"}, {"name": "Per Jirstrand", "initials": "PJ", "company": "Block5 Ventures", "position": "Founder & CEO", "location": "New York", "industry": ["FinTech", "Gaming", "Social Sciences and Business Management"], "business": ["Business Development", "Entrepreneurship (general)", "Fundraising", "Marketing / Sales", "Pitching / Storytelling"], "bio": "I'm an entrepreneur that have gone through the startup experience three times launching a business, scaling it, and then exit. I'd be happy to connect and share best practices, provide feedback, and b...", "linkedin": "https://www.linkedin.com/in/pjirstrand/"}, {"name": "Sarah Ackermann", "initials": "SA", "company": "Independent Consultancy", "position": "Independent Consultant", "location": "Arlington, Virginia", "industry": ["Pharma", "Social Sciences and Business Management"], "business": ["Business Development", "Hiring", "Leadership"], "bio": "I have been helping pharma and biotech companies as well as startups (health tech, AI, the arts, etc.) enter and expand in the US market. My expertise includes: market research, branding and positioni...", "linkedin": "https://www.linkedin.com/in/sara-ackermann/"}, {"name": "Sasha Jostrom", "initials": "SJ", "company": "Ex-Cybernetix Ventures", "position": "Principal", "location": "Boston", "industry": ["AI / Robotics", "MedTech", "Construction", "Supply Chain", "Manufacturing"], "business": ["Entrepreneurship (general)", "Pitching / Storytelling"], "bio": "Alexandra “Sasha” Jostrom-Reiser was a Principal at Cybernetix Ventures. She focuses on sourcing, diligence, deal execution and portfolio support. Previously, Sasha was a Principal at Alumni Ventures ...", "linkedin": "https://www.linkedin.com/in/alexandrajostrom/"}, {"name": "Spencer Champagne", "initials": "SC", "company": "Biosimply", "position": "Partner, ex - EVERSANA Management Consulting", "location": "Boston", "industry": ["Biotech", "MedTech", "Pharma"], "business": ["Business Development", "Marketing / Sales", "Pricing"], "bio": "I specialize in commercialization strategy across the life sciences sector, inclusive of launch and growth strategy, M&A, pricing, reimbursement, market access, and channel strategy.", "linkedin": "https://www.linkedin.com/in/spencerchampagne"}, {"name": "Sreejit Mohan", "initials": "SM", "company": "Independent", "position": "Consultant, Strategic Communications & Stakeholder Engagement", "location": "Boston", "industry": ["Biotech", "Pharma"], "business": ["PR", "Pitching / Storytelling"], "bio": "Sreejit Mohan is a seasoned strategic communications and stakeholder relations executive with over two decades of experience in the biotechnology and healthcare sectors. Recognized for his ability to ...", "linkedin": "https://linkedin.com/in/sreejitmohan"}, {"name": "Tim Miller", "initials": "TM", "company": "AdvanceCT", "position": "VP of Business Development ", "location": "New England", "industry": ["Biotech", "MedTech", "Pharma"], "business": ["Business Development", "Fundraising"], "bio": "I assist companies expand to the US through access to academic, funding, state, and talent resources. Positioned between New York and Boston, we have all of the benefits of the East Coast US without t...", "linkedin": "https://www.linkedin.com/in/tim-miller-039b054b/"}, {"name": "Ursina Beerli", "initials": "UB", "company": "Beerli Advisors", "position": "Value Creation Advisor", "location": "Zurich, Switzerland", "industry": ["CleanTech", "Gaming", "\"Music", "Media", "Entertainment\""], "business": ["Business Development", "Marketing / Sales", "US Market Entry"], "bio": "With 15+ years of experience driving growth across retail, tech, and entertainment in both Europe and the US, I help startups sharpen their go-to-market strategy, refine positioning, and accelerate co...", "linkedin": "https://www.linkedin.com/in/ursina-beerli/"}, {"name": "Victor Bergonzoli", "initials": "VB", "company": "SportsEdTV", "position": "CEO", "location": "Miami / Atlanta", "industry": ["Sports", "Social Sciences and Business Management", "ICT"], "business": ["Business Development", "Entrepreneurship (general)", "Leadership"], "bio": "In a session with me, a seasoned serial entrepreneur with over two decades of experience in various US cities, startups and entrepreneurs can anticipate a wealth of valuable insights. With a proven tr...", "linkedin": "https://www.linkedin.com/in/bergonzoli"}];
+
+// ============ GOOGLE SHEETS CONNECTION ============
+// To connect to your Google Sheet:
+// 1. Open your Google Sheet
+// 2. Go to File > Share > Publish to the web
+// 3. Choose "Entire document" and "CSV" format
+// 4. Copy the published URL
+// 5. Replace the empty string below with your URL
+const GOOGLE_SHEET_CSV_URL = '';
+
+async function loadFromGoogleSheet() {
+  if (!GOOGLE_SHEET_CSV_URL) return false;
+  try {
+    const res = await fetch(GOOGLE_SHEET_CSV_URL);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    if (rows.length < 3) return false;
+    const headers = rows[0];
+    // Skip row 1 (keywords for Awesome Table)
+    const data = rows.slice(2);
+    EXPERTS = data.map(row => {
+      const get = (h) => {
+        const idx = headers.indexOf(h);
+        return idx >= 0 ? (row[idx] || '') : '';
+      };
+      const name = get('Name');
+      const initials = name.split(' ').filter(w=>w).map(w=>w[0].toUpperCase()).slice(0,2).join('');
+      const industry = get('Industry expertise').split(',').map(s=>s.trim()).filter(Boolean);
+      const business = get('Business expertise').split(',').map(s=>s.trim()).filter(Boolean);
+      let bio = get('What can you expect from a session with this expert?');
+      if (bio.length > 200) bio = bio.slice(0,200) + '...';
+      let linkedin = get('LinkedIn');
+      if (linkedin && !linkedin.startsWith('http')) linkedin = 'https://' + linkedin;
+      return { name, initials, company: get('Company'), position: get('Position'), location: get('Location'), industry, business, bio, linkedin };
+    }).filter(e => e.name);
+    return true;
+  } catch(e) {
+    console.error('Failed to load Google Sheet:', e);
+    return false;
+  }
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = []; let cell = ''; let inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuote) {
+      if (c === '"' && text[i+1] === '"') { cell += '"'; i++; }
+      else if (c === '"') inQuote = false;
+      else cell += c;
+    } else {
+      if (c === '"') inQuote = true;
+      else if (c === ',') { row.push(cell); cell = ''; }
+      else if (c === '\n' || (c === '\r' && text[i+1] === '\n')) {
+        if (c === '\r') i++;
+        row.push(cell); cell = '';
+        if (row.some(c=>c.trim())) rows.push(row);
+        row = [];
+      } else cell += c;
+    }
+  }
+  row.push(cell);
+  if (row.some(c=>c.trim())) rows.push(row);
+  return rows;
+}
+
+// ============ FILTERS ============
+const FILTER_CATS = {
+  'All experts': null,
+  'Legal & IP': ['Legal (general)', 'IP', 'Incorporation', 'Legal'],
+  'FDA & Regulatory': ['FDA', 'Reimbursement', 'Regulatory', 'Clinical', 'Compliance'],
+  'Go-to-market': ['Business Development', 'Marketing / Sales', 'Go to market', 'Market Research', 'Pricing'],
+  'Fundraising': ['Fundraising', 'Pitching / Storytelling'],
+  'Immigration': ['Immigration'],
+  'Marketing & PR': ['PR', 'Design', 'Marketing / Sales'],
+  'Leadership': ['Leadership', 'Entrepreneurship (general)'],
+};
+
+const AVATAR_COLORS = [
+  {bg:'#E6F1FB',c:'#0C447C'},{bg:'#EEEDFE',c:'#3C3489'},
+  {bg:'#E1F5EE',c:'#085041'},{bg:'#FAECE7',c:'#712B13'},
+  {bg:'#FBEAF0',c:'#72243E'},{bg:'#FAEEDA',c:'#633806'},
+];
+
+let activeFilter = 'All experts';
+
+function getColor(name) {
+  let h = 0; for(let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h);
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
+function matchFilter(expert, filter) {
+  if (!FILTER_CATS[filter]) return true;
+  const tags = [...expert.industry, ...expert.business];
+  return FILTER_CATS[filter].some(t => tags.some(tag => tag.toLowerCase().includes(t.toLowerCase())));
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const grid = document.getElementById('grid');
+  
+  const filtered = EXPERTS.filter(e => {
+    const matchF = matchFilter(e, activeFilter);
+    const text = [e.name, e.company, e.position, e.location, ...e.industry, ...e.business, e.bio].join(' ').toLowerCase();
+    const matchQ = !q || text.includes(q);
+    return matchF && matchQ;
+  });
+  
+  document.getElementById('count').textContent = filtered.length + ' expert' + (filtered.length !== 1 ? 's' : '') + ' shown';
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">No experts match your search. Try different keywords or filters.</div>';
+    return;
+  }
+  
+  grid.innerHTML = filtered.map(e => {
+    const col = getColor(e.name);
+    const indTags = e.industry.slice(0,3).map(t => '<span class="tag ind">' + t + '</span>').join('');
+    const bizTags = e.business.slice(0,2).map(t => '<span class="tag biz">' + t + '</span>').join('');
+    const linkedIn = e.linkedin ? '<a class="linkedin" href="' + e.linkedin + '" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>LinkedIn</a>' : '';
+    return '<div class="card"><div class="card-head"><div class="avatar" style="background:' + col.bg + ';color:' + col.c + ';">' + e.initials + '</div><div><div class="card-name">' + e.name + '</div><div class="card-role">' + e.position + '</div><div class="card-company">' + e.company + '</div></div></div><div class="tags">' + indTags + bizTags + '</div><div class="loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' + e.location + '</div><div class="bio">' + e.bio + '</div>' + linkedIn + '</div>';
+  }).join('');
+}
+
+function buildFilters() {
+  const wrap = document.getElementById('filters');
+  wrap.innerHTML = Object.keys(FILTER_CATS).map(k => 
+    '<span class="pill' + (k === activeFilter ? ' active' : '') + '" data-f="' + k + '">' + k + '</span>'
+  ).join('');
+  wrap.querySelectorAll('.pill').forEach(p => {
+    p.addEventListener('click', () => {
+      activeFilter = p.dataset.f;
+      wrap.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      render();
+    });
+  });
+}
+
+// ============ INIT ============
+async function init() {
+  const loaded = await loadFromGoogleSheet();
+  if (loaded) {
+    document.getElementById('gs-banner').style.display = 'block';
+    document.getElementById('gs-banner').innerHTML = '✅ Connected to Google Sheet — data updates automatically.';
+  }
+  buildFilters();
+  render();
+  document.getElementById('search').addEventListener('input', render);
+}
+
+init();
+</script>
+</body>
+</html>
