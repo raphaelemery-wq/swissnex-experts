@@ -81,7 +81,51 @@ body { font-family: 'DM Sans', sans-serif; background: #f7f7f5; color: #1a1a1a; 
   .container { padding: 18px 14px 40px; }
   .grid { grid-template-columns: 1fr; }
   .modal { padding: 22px 16px; }
+  .selection-panel { width: 100%; max-width: 100%; }
+  .selection-fab { right: 16px; bottom: 16px; padding: 12px 18px; }
 }
+
+/* === Instruction bar === */
+.instruction-bar { background: #FFF4F4; border-bottom: 1px solid #F5D9D9; }
+.instruction-bar-inner { max-width: 1140px; margin: 0 auto; padding: 13px 24px; font-size: 13.5px; color: #7A1620; display: flex; align-items: center; gap: 10px; line-height: 1.5; }
+.instruction-bar-inner svg { flex-shrink: 0; color: #E30613; }
+
+/* === Select button on card === */
+.card-footer { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.card-footer-li { flex: 1; min-width: 0; }
+.select-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 99px; border: 1.5px solid #ddd; background: #fff; font-size: 12px; font-weight: 600; color: #444; cursor: pointer; font-family: inherit; transition: all 0.15s; flex-shrink: 0; }
+.select-btn:hover { border-color: #bbb; background: #fafafa; }
+.select-btn.selected { background: #E30613; border-color: #E30613; color: #fff; }
+.select-btn.selected:hover { background: #c50510; }
+
+/* === Floating selection button === */
+.selection-fab { position: fixed; bottom: 28px; right: 28px; background: #1a1a1a; color: #fff; border: none; border-radius: 99px; padding: 14px 20px; font-size: 13.5px; font-weight: 700; font-family: inherit; cursor: pointer; box-shadow: 0 10px 28px rgba(0,0,0,0.22); display: none; align-items: center; gap: 10px; z-index: 500; transition: transform 0.15s, box-shadow 0.15s; }
+.selection-fab.visible { display: inline-flex; }
+.selection-fab:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,0.28); }
+.selection-fab-badge { background: #E30613; color: #fff; border-radius: 99px; min-width: 20px; height: 20px; padding: 0 6px; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; }
+
+/* === Selection panel === */
+.selection-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.selection-panel-overlay.open { opacity: 1; pointer-events: auto; }
+.selection-panel { position: fixed; top: 0; right: 0; height: 100%; width: 380px; max-width: 92vw; background: #fff; z-index: 1001; box-shadow: -10px 0 36px rgba(0,0,0,0.14); transform: translateX(100%); transition: transform 0.25s ease; display: flex; flex-direction: column; }
+.selection-panel.open { transform: translateX(0); }
+.selection-panel-header { padding: 22px 22px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.selection-panel-header h3 { font-size: 16px; font-weight: 700; }
+.selection-panel-close { background: #f2f2f2; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #555; transition: background 0.15s; }
+.selection-panel-close:hover { background: #e8e8e8; }
+.selection-list { flex: 1; overflow-y: auto; padding: 10px 14px; }
+.selection-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border-radius: 10px; transition: background 0.1s; }
+.selection-item:hover { background: #f7f7f5; }
+.selection-item-name { font-size: 13.5px; font-weight: 600; }
+.selection-item-role { font-size: 11.5px; color: #888; margin-top: 1px; }
+.selection-remove { background: none; border: none; color: #aaa; cursor: pointer; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.1s, color 0.1s; }
+.selection-remove:hover { background: #fbeaea; color: #E30613; }
+.selection-empty { text-align: center; color: #999; font-size: 13px; padding: 44px 16px; }
+.selection-panel-footer { padding: 16px 22px 22px; border-top: 1px solid #eee; flex-shrink: 0; }
+.copy-names-btn { width: 100%; background: #E30613; color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
+.copy-names-btn:hover { background: #c50510; }
+.copy-names-btn:disabled { background: #ddd; cursor: not-allowed; }
+.copy-names-btn.copied { background: #0a8a4a; }
 </style>
 </head>
 <body>
@@ -92,6 +136,13 @@ body { font-family: 'DM Sans', sans-serif; background: #f7f7f5; color: #1a1a1a; 
   <div class="hero-text">
     <h1>Expert network</h1>
     <p>Browse our network of 50+ industry experts across Boston and New York. All experts volunteer their time — the initial meeting is always free. Come prepared and be mindful of their availability.</p>
+  </div>
+</div>
+
+<div class="instruction-bar">
+  <div class="instruction-bar-inner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span>Select the experts you would like to speak with. Then, copy and paste their names into an email to Ahmet &amp; Oriane (Boston) or Joséphine (NYC), and we'll facilitate an introduction.</span>
   </div>
 </div>
 
@@ -135,6 +186,26 @@ body { font-family: 'DM Sans', sans-serif; background: #f7f7f5; color: #1a1a1a; 
     <p>Want to meet one of our experts?</p>
     <small>Email Ahmet &amp; Oriane (Boston) or Joséphine (NYC) and we'll facilitate an introduction.</small><br>
     <a class="cta-btn" href="mailto:oriane.rutsche@swissnex.org">Request a meeting</a>
+  </div>
+</div>
+
+<button class="selection-fab" id="selection-fab" onclick="toggleSelectionPanel()">
+  <span>Review selection</span>
+  <span class="selection-fab-badge" id="fab-badge">0</span>
+</button>
+
+<div class="selection-panel-overlay" id="selection-panel-overlay" onclick="toggleSelectionPanel(false)"></div>
+<div class="selection-panel" id="selection-panel">
+  <div class="selection-panel-header">
+    <h3 id="selection-panel-title">Selected experts (0)</h3>
+    <button class="selection-panel-close" onclick="toggleSelectionPanel(false)">&#x2715;</button>
+  </div>
+  <div class="selection-list" id="selection-list"></div>
+  <div class="selection-panel-footer">
+    <button class="copy-names-btn" id="copy-names-btn" onclick="copySelectedNames()" disabled>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copy-names-btn-label">Copy names</span>
+    </button>
   </div>
 </div>
 
@@ -185,9 +256,101 @@ function getColor(name) {
 
 const LI_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.35-1.85 3.58 0 4.25 2.36 4.25 5.43v6.31zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.44C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>';
 const PIN_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+const PLUS_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+const CHECK_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+const X_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
+// give every expert a stable unique id for selection tracking
+EXPERTS.forEach((e, i) => { e._id = i; });
 
 // === FILTER STATE ===
 const sel = { location: new Set(), industry: new Set(), business: new Set() };
+
+// === EXPERT SELECTION STATE ===
+const pickedExperts = new Map(); // id -> expert object
+
+function toggleSelect(id, evt) {
+  if (evt) evt.stopPropagation();
+  const btn = document.querySelector('.select-btn[data-id="' + id + '"]');
+  if (pickedExperts.has(id)) {
+    pickedExperts.delete(id);
+    if (btn) { btn.classList.remove('selected'); btn.innerHTML = PLUS_SVG + ' Select'; }
+  } else {
+    const e = EXPERTS.find(x => x._id === id);
+    if (!e) return;
+    pickedExperts.set(id, e);
+    if (btn) { btn.classList.add('selected'); btn.innerHTML = CHECK_SVG + ' Selected'; }
+  }
+  updateSelectionUI();
+}
+
+function removeSelected(id) {
+  pickedExperts.delete(id);
+  const btn = document.querySelector('.select-btn[data-id="' + id + '"]');
+  if (btn) { btn.classList.remove('selected'); btn.innerHTML = PLUS_SVG + ' Select'; }
+  updateSelectionUI();
+}
+
+function updateSelectionUI() {
+  const n = pickedExperts.size;
+  document.getElementById('fab-badge').textContent = n;
+  document.getElementById('selection-fab').classList.toggle('visible', n > 0);
+  document.getElementById('selection-panel-title').textContent = 'Selected experts (' + n + ')';
+  const copyBtn = document.getElementById('copy-names-btn');
+  copyBtn.disabled = n === 0;
+
+  const listEl = document.getElementById('selection-list');
+  if (n === 0) {
+    listEl.innerHTML = '<div class="selection-empty">No experts selected yet. Tap "Select" on any expert card to add them here.</div>';
+    return;
+  }
+  listEl.innerHTML = [...pickedExperts.values()].map(e =>
+    '<div class="selection-item">'
+    + '<div class="selection-item-info"><div class="selection-item-name">' + e.name + '</div><div class="selection-item-role">' + e.position + ' · ' + e.company + '</div></div>'
+    + '<button class="selection-remove" onclick="removeSelected(' + e._id + ')" aria-label="Remove ' + e.name + '">' + X_SVG + '</button>'
+    + '</div>'
+  ).join('');
+}
+
+function toggleSelectionPanel(force) {
+  const panel = document.getElementById('selection-panel');
+  const overlay = document.getElementById('selection-panel-overlay');
+  const opening = typeof force === 'boolean' ? force : !panel.classList.contains('open');
+  panel.classList.toggle('open', opening);
+  overlay.classList.toggle('open', opening);
+}
+
+function copySelectedNames() {
+  const names = [...pickedExperts.values()].map(e => e.name).join('\n');
+  if (!names) return;
+  const btn = document.getElementById('copy-names-btn');
+  const label = document.getElementById('copy-names-btn-label');
+  const finish = () => {
+    const original = label.textContent;
+    label.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { label.textContent = original; btn.classList.remove('copied'); }, 1800);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(names).then(finish).catch(() => fallbackCopy(names, finish));
+  } else {
+    fallbackCopy(names, finish);
+  }
+}
+
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+  if (done) done();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleSelectionPanel(false); });
 
 function buildDropdown(ddId, items, key, countId) {
   const dd = document.getElementById(ddId);
@@ -285,13 +448,17 @@ function renderGrid() {
     const bizTags = e.business.slice(0,3).map(t => '<span class="tag biz">'+t+'</span>').join('');
     const bio = e.session ? (e.session.length > 160 ? e.session.slice(0,160)+'…' : e.session) : '';
     const li = e.linkedin ? '<a class="linkedin-link" href="'+e.linkedin+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+LI_SVG+' LinkedIn</a>' : '';
+    const isSelected = pickedExperts.has(e._id);
+    const selectBtn = '<button type="button" class="select-btn'+(isSelected?' selected':'')+'" data-id="'+e._id+'" onclick="toggleSelect('+e._id+', event)">'
+      + (isSelected ? CHECK_SVG+' Selected' : PLUS_SVG+' Select') + '</button>';
     return '<div class="card" onclick="openModal('+i+')">'
       +'<div class="card-head"><div class="avatar" style="background:'+col.bg+';color:'+col.c+'">'+e.initials+'</div>'
       +'<div><div class="card-name">'+e.name+'</div><div class="card-role">'+e.position+'</div><div class="card-company">'+e.company+'</div></div></div>'
       +'<div class="loc">'+PIN_SVG+' '+e.locationRaw+'</div>'
       +'<div class="tags">'+indTags+bizTags+'</div>'
       +(bio?'<div class="bio">'+bio+'</div>':'')
-      +li+'</div>';
+      +'<div class="card-footer"><span class="card-footer-li">'+li+'</span>'+selectBtn+'</div>'
+      +'</div>';
   }).join('');
 }
 
@@ -325,6 +492,7 @@ function closeModalOnOverlay(e) {
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 document.getElementById('search').addEventListener('input', renderGrid);
 renderGrid();
+updateSelectionUI();
 </script>
 </body>
 </html>
